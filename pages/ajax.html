@@ -1,0 +1,157 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Ajax Message</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" 
+  rel="stylesheet" 
+  integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" 
+  crossorigin="anonymous">
+</head>
+<style>
+
+  * {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+  }
+
+  body {
+    font-family: 'Courier New', Courier, monospace;
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    align-items: center;
+    gap: 20px;
+	background-color: rgb(90, 90, 90);
+  }
+
+  ul {
+    width: 100%;
+    padding-top: 15px;
+    list-style: none;
+    display: flex;
+    justify-content: space-evenly;
+    align-items: center;
+    flex-wrap: wrap;
+  }
+  a {
+    color: white;
+    font-size: 20px;
+  }
+  header {
+    width: 100%;
+    background-color: rgba(29, 28, 28, 0.89);
+  }
+  nav {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .container {
+    max-width: 1000px;
+  }
+
+  @media screen and (max-width:768px) {
+  .tohide { 
+    display: none; 
+    }
+
+    table {
+      font-size: 12px;
+    }
+
+    ul {
+      flex-direction: column;
+    }
+  }
+
+</style>
+<body>
+  <body>
+    <header>
+      <nav>
+        <ul>
+          <li><a href="/">Home</a></li>
+          <li><a href="/guestbook">Guestbook</a></li>
+          <li><a href="/newmessage">New Message</a></li>
+          <li><a href="/ajaxmessage">New Ajax Message</a></li>
+        </ul>
+      </nav>
+    </header>
+    <form method="POST" action="/addMessage">
+      <div class="form-group">
+        <label> Name</label>
+        <input type="text" class="form-control" id="name" name="name" />
+      </div>
+      <div class="form-group">
+        <label>Country</label>
+        <input type="text" class="form-control" id="country" name="country" />
+      </div>
+      <div class="form-group">
+        <label> Message</label>
+        <input type="text" class="form-control" id="message" name="message" />
+      </div>
+      <input type="button" id="send" class="btn btn-primary" value="New Ajax Message">
+    </form>
+    <div class="container">
+      <div id="root"></div>
+    </div>
+  </body>
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+  <script>
+      // Click function for ajax
+      $("#send").click(function () {
+      // Save data
+        var name = $("#name").val();
+        var country = $("#country").val();
+        var message = $("#message").val();
+        var date = new Date();
+      // Check to make sure fields are NOT empty
+        if (name == "" || country == "" || message == "") {
+          alert("Please fill all fields")
+        } else {
+          // Ajax alert
+        $("#gbdata").show();
+        alert("Message sent to Guestbook")
+      // Variable containing the data
+          var sendingData = {
+            "name": name,
+            "country": country,
+            "message": message
+            };
+      // Ajax call that sends the form
+        $.ajax({
+            type: 'POST',
+            url: '/ajaxmessage',
+            data: sendingData,
+            success: function (postData) {
+              {
+      // Parsin the data into /guestbook
+                for (var i = 0; i < postData.length; i++) {
+                var name = postData[i].name;
+                var country = postData[i].country
+                var message = postData[i].message
+                var date = postData[i].date
+                var tr_str = "<tr>" +
+                "<td align='center'>" + name + "</td>" +
+                "<td align='center'>" + country + "</td>" +
+                "<td align='center'>" + date.toString() + "</td>" +
+                "<td align='center'>" + message + "</td>" +
+                "</tr>"
+                $("#gbdata").append(tr_str);
+              }
+            }
+          }
+        })
+      }
+    })
+  </script>
+      <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js"
+      integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q"
+      crossorigin="anonymous"></script>
+</html>
